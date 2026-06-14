@@ -1,3 +1,4 @@
+#include <ESP32Servo.h>
 #include <waste_segregation_inferencing.h>
 #include "edge-impulse-sdk/dsp/image/image.hpp"
 
@@ -26,6 +27,7 @@
 #define EI_CAMERA_RAW_FRAME_BUFFER_ROWS           240
 #define EI_CAMERA_FRAME_BYTE_SIZE                 3
 
+#define FLASH 4
 /* Private variables ------------------------------------------------------- */
 static bool debug_nn = false; // Set this to true to see e.g. features generated from the raw signal
 static bool is_initialised = false;
@@ -69,6 +71,9 @@ bool ei_camera_init(void);
 void ei_camera_deinit(void);
 bool ei_camera_capture(uint32_t img_width, uint32_t img_height, uint8_t *out_buf) ;
 
+Servo myServo;  // Create servo object
+int servoPin = 13; // GPIO pin connected to the servo signal wire
+
 /**
 * @brief      Arduino setup function
 */
@@ -85,6 +90,7 @@ void setup()
     else {
         ei_printf("Camera initialized OK\r\n");
     }
+    myServo.attach(servoPin); // Attaches the servo to the GPIO pin
 
     ei_printf("\nwait for 2 seconds...\n");
     ei_sleep(2000);
@@ -131,11 +137,11 @@ void loop()
     }
 
     // print the predictions
-    ei_printf("Predictions (DSP: %d ms., Classification: %d ms., Anomaly: %d ms.): \n",
-                result.timing.dsp, result.timing.classification, result.timing.anomaly);
+    /* ei_printf("Predictions (DSP: %d ms., Classification: %d ms., Anomaly: %d ms.): \n",
+                result.timing.dsp, result.timing.classification, result.timing.anomaly); */
 
 #if EI_CLASSIFIER_OBJECT_DETECTION == 1
-    ei_printf("Object detection bounding boxes:\r\n");
+    // ei_printf("Object detection bounding boxes:\r\n");
     for (uint32_t i = 0; i < result.bounding_boxes_count; i++) {
         ei_impulse_result_bounding_box_t bb = result.bounding_boxes[i];
         if (bb.value == 0) {
@@ -149,6 +155,33 @@ void loop()
                 bb.width,
                 bb.height); */
         ei_printf("%s", bb.label);
+        if (strcmp(bb.label, "btl1") == 0) {
+            // Code for btl1 state
+            ei_printf("Plastic Bottle, Plastic waste\n");
+            myServo.write(0);
+            ei_sleep(500);
+            myServo.write(90);
+            ei_sleep(500);
+        }
+        else if (strcmp(bb.label, "pbl") == 0) {
+            // Code for pbl state
+            ei_printf("Paper Ball, Paper waste\n");
+            myServo.write(180);
+            ei_sleep(500);
+            myServo.write(90);
+            ei_sleep(500);
+        }
+        else if (strcmp(bb.label, "pbx") == 0) {
+            // Code for pbx state
+            ei_printf("Paper Box, Paper waste\n");
+            myServo.write(180);
+            ei_sleep(500);
+            myServo.write(90);
+            ei_sleep(500);
+            }
+        else {
+            // Code for any unknown or unhandled labels
+        }
     }
 
     // Print the prediction results (classification)
