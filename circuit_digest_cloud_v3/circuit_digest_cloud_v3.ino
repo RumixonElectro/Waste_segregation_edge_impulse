@@ -18,11 +18,11 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define I2C_SCL 14
 
 // WiFi and API Config
-const char* WIFI_SSID = "Airtel_balu_2470_ex";
-const char* WIFI_PASS = "air38583";
+const char* WIFI_SSID = "RumixonIoTech";
+const char* WIFI_PASS = "pass1234";
 /* const char* API_KEY = "cd_rum_140626_JbSUbf"; */ //rumixon12 expired
-const char* API_KEY = "cd_rum_150626_V8MTTP"; //rumixoncorp     current
-/* const char* API_KEY = "cd_pro_150626_lQnHV8"; //projects.rumixoniotech     new */
+/* const char* API_KEY = "cd_rum_150626_V8MTTP"; //rumixoncorp     current */
+const char* API_KEY = "cd_pro_150626_lQnHV8"; //projects.rumixoniotech     new
 
 const char* serverName = "www.circuitdigest.cloud";
 const char* serverPath = "/api/v1/waste-detection/detect";

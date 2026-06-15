@@ -1,4 +1,7 @@
 pbl => paper ball
-pbx => pet box
+pbx => paper box
 btl => bottle
-pwl => plastic spool
+plw => plastic spool/waste
+
+mgw => mango waste
+
